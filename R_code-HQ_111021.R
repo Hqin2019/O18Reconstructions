@@ -68,7 +68,9 @@ length(sd_mod)
 mod_std<- (mod_o18 - clim_mod) / sd_mod
 dim(mod_std)
 #[1] 856  45
-
+timeave1<- rowMeans(mod_std)
+sum(round(timave1)==0)
+#856 zeros
 #Plot the model data anomalies used for generating EOFs
 #For July 1997
 library(ggplot2)
