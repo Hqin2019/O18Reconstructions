@@ -712,7 +712,7 @@ for (i in 1:9) {
          bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
 }
 
-for (i in 10:18) { 
+for (i in 10:17) { 
   plot(t1, dato[i,5:31],type="o", ylim=c(-50,10),
        xlab="",ylab="",
        cex.axis=1.5,cex.lab=1.5,
