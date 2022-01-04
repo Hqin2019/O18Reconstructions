@@ -631,3 +631,98 @@ jja=rep(c("Jun","Jul","Aug"),9)
 yr2=rep(1997:2005,each=3)
 hdjja1=paste(jja,yr2)
 colnames(recon3)<-c("BoxID","Lon","Lat", hdjja1)
+
+write.csv(recon3,file="D:/O18Reconstructions/reconout3cut.csv")
+
+#plot the results: space-time averages
+gridout2=read.csv("D:/O18Reconstructions/reconout3cut.csv",header=TRUE)
+dim(gridout2)
+#[1] 856  31 #The first column is the grid ID
+timeave2=rowMeans(gridout2[,5:31]) #Time ave 
+areaw2=cos((pi/180)*gridout2[,4])/sum(cos((pi/180)*gridout2[,4]))
+#Show area weight variation wrt lat, close to be uniform
+plot(areaw2, ylim=c(1/856-0.0002,1/856+0.0002))
+wtgrid2=areaw2*gridout2[,5:31] #Area weighted data
+spaceave2=colSums(wtgrid2) #Spatial ave
+#write.csv(spaceave2,file="C:/Users/hniqd/OneDrive/Documents/TP2020-07-03YaoChen/2017-10-28Computing/spaceave2mix.csv")
+#write.csv(timeave2,file="C:/Users/hniqd/OneDrive/Documents/TP2020-07-03YaoChen/2017-10-28Computing/timeave2mix.csv")
+
+#Plot the reconstruction data and save the figures in a folder
+setwd("D:/O18Reconstructions/ReconFig3Mod3cut")
+recon<- recon3
+tpdatlatlon=data.frame(recon)
+for(i in 4:30){
+  scale=pmax(pmin(recon[,i],10),-10) 
+  p<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=2.5) +
+    scale_colour_gradient2(limits=c(-15,15),low="blue",mid="white", 
+                           midpoint=0, high = "red", space="rgb")+
+    ggtitle(paste("Reconstructed O18 Anomalies:", hdjja1[i-3])) +
+    theme(plot.title = element_text(hjust = 0.5),legend.key.height = unit(0.8, "cm"), legend.key.width = unit(0.5, "cm"))+
+    labs(x="Longitude", y="Latitude")
+  png(paste("Reconstructed O18 Anomalies",hdjja1[i-3], ".png", sep = ""), width=600, height=400, res=120)
+  print(p)
+  dev.off()
+}
+
+
+#Validation
+#Read the obs data
+dim(dato)
+#[1] 17 37 
+obsave=colMeans(dato[5:31], na.rm=T)
+#obsave<- colMeans(dato_rmmin[5:37],na.rm=T)
+plot(obsave, type="l")
+
+#Compare station and itd grid box data
+dim(gridout2)
+#gridout2 is data.frame of recon results
+#[1] 856  31 #The first column is the grid ID
+gridout2ori_O18<- gridout2[, 5:31]*sd_mod + clim_mod
+gridout2[, 5:31]<- gridout2ori_O18
+
+grid_id=dato[,2]
+length(grid_id)
+#[1] 17
+
+
+plot.new()
+#png(file = 'monthtrend.png') #Automatical saving of a figure
+t1=seq(1997,2008,len=33)
+t1<- t1[1: 27]
+stn_name<-dato[,1]
+gridout1<-recon
+gridout1ori_O18<- gridout1[, 4:30]*sd_mod + clim_mod
+gridout1[, 4:30]<- gridout1ori_O18
+par(mfrow = c(3, 3))  # 4 rows and 4 columns
+par(mgp=c(2,1,0))
+par(mar=c(3,3,2,3))
+
+for (i in 1:9) { 
+  plot(t1, dato[i,5:31],type="o", ylim=c(-50,10),
+       xlab="",ylab="",
+       cex.axis=1.5,cex.lab=1.5,
+       main = paste(stn_name[i],",", "Grid ID", grid_id[i]))
+  legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
+         legend=c("Station data"),
+         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
+  lines(t1, gridout1[grid_id[i], 4:30], col="blue") 
+  text(1998,-15, paste("(",letters[i],")"), cex=2.0)
+  legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
+         legend=c("Reconstructed data"),text.col = "blue",
+         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
+}
+
+for (i in 10:18) { 
+  plot(t1, dato[i,5:31],type="o", ylim=c(-50,10),
+       xlab="",ylab="",
+       cex.axis=1.5,cex.lab=1.5,
+       main = paste(stn_name[i],",", "Grid ID", grid_id[i]))
+  legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
+         legend=c("Station data"),
+         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
+  lines(t1, gridout1[grid_id[i], 4:30], col="blue") 
+  text(1998,-15, paste("(",letters[i],")"), cex=2.0)
+  legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
+         legend=c("Reconstructed data"),text.col = "blue",
+         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
+}
