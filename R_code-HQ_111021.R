@@ -601,5 +601,33 @@ for (i in 10:18) {
          bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
 }
 
+#With observation data from 1997-2005 for three-mode
+datocut<- dato_O18_std[, 1:27]
+dato_std<- data.frame(dato[, 1:4], datocut)
+colnames(dato_std)<- colnames(dato[, 1:31])
 
+recon3=matrix(0,nrow=856,ncol=30)
+for (i in 5:31) {y=complete.cases(dato_std[,i])
+v=which(y)
+u=dato_std[v,2]
+datr=dato_std[v,i]
+eofr=eofm3[u,c("E1","E2","E3")]
+df=data.frame(eofr,datr)
+reg=lm(formula=datr~E1+E2+E3, data=df)
+coe=reg$coefficients
+c1=rep(1,856)
+res=cbind(c1,eofm3[,c("E1","E2","E3")])
+recon3[,i-1]=data.matrix(res)%*%coe
+}
 
+#Put grid ID, lat and lon as the first three columns
+recon3<- data.frame(recon3)
+recon3[,1:3] = mod_rm[,1:3]
+#recon3[,1]=mod_rm[,3]
+#recon3[,2]=mod_rm[,1]
+#recon3[,3]=mod_rm[,2]
+#Put proper header
+jja=rep(c("Jun","Jul","Aug"),9)
+yr2=rep(1997:2005,each=3)
+hdjja1=paste(jja,yr2)
+colnames(recon3)<-c("BoxID","Lon","Lat", hdjja1)
