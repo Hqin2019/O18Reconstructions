@@ -68,7 +68,7 @@ length(sd_mod)
 mod_std<- (mod_o18 - clim_mod) / sd_mod
 dim(mod_std)
 #[1] 856  45
-timeave1<- rowMeans(mod_std)
+timave1<- rowMeans(mod_std)
 sum(round(timave1)==0)
 #856 zeros
 #Plot the model data anomalies used for generating EOFs
@@ -184,7 +184,7 @@ tp=ggmap(myMap)
 ggmap(myMap)
 #Read the EOF data for TP
 tpdat=data.frame(eofm4)
-#plot the first six EOFs and save the figures
+#plot the first four EOFs and save the figures
 setwd("D:/O18Reconstructions/EOFs")
 for(i in 1:4){
   scale=tpdat[,i+2]
@@ -289,27 +289,24 @@ legend("bottomleft", legend=c("pc4", "pc5", "pc6"),
        cex = 0.4)
 
 dato=read.csv("D:/O18Reconstructions/cleaned_original.csv",header=TRUE)
-dato<- dato[, -1]
 colnames(dato)[2:4]<- c("BoxID", "Lat", "Lon")
 colnames(dato)[5:37]<- colnames(mod_rm)[4:36]
 IDloc<- dato[, 1:4]
 stnyr=dim(dato)
 stnyr
-#[1] 19 37 
-#19 stations
+#[1] 17 37 
+#17 stations: remove Bomi(no points)
 #First 4 columns: Stn name, BoxID, Lat, Lon
 dato_O18<- dato[, 5:37]
 dim(dato_O18)
-#[1] 19 33
+#[1] 17 33
 sum(!is.na(dato_O18))
-#[1] 211 nonNA values
+#[1] 210 nonNA values
 
 #mixed-mode reconstruction for every month
 f<- data.frame(cbind(mod_rm[, 1], clim_mod, sd_mod))
 climo<- f[f$V1 %in% dato[,2], ][,2]
-climo <- c(climo[1],climo) #there are two station share the same ID.
 sdo<- f[f$V1 %in% dato[,2], ][,3]
-sdo <- c(sdo[1],sdo) #there are two stations share the same ID.
 dato_O18_std<- (dato_O18 - climo)/sdo 
 
 dato_std<- data.frame(dato[, 1:4], dato_O18_std)
@@ -426,15 +423,15 @@ plot(seq(1997,2007,len=33),spaceave2,type="o", ylim=c(-25,30),
 
 
 #Plot the data for a few months to check their ranges
-gridid=1:856
-plot(gridid, recon[,31],type="l", ylim=c(-150,100))
-lines(gridid,recon[,30],type="l", col="red")
-lines(gridid,recon[,32],type="l", col="blue")
+#gridid=1:856
+#plot(gridid, recon[,31],type="l", ylim=c(-150,100))
+#lines(gridid,recon[,30],type="l", col="red")
+#lines(gridid,recon[,32],type="l", col="blue")
 
-plot(seq(1,856),timeave2,type="l", ylim=c(-5,2),
-     main="Temporal Average O18 Anomalies over Tibetan Plateau: 3-Mode Reconstruction",
-     xlab="Grid box ID from 1 to 856", 
-     ylab="TP 1997-2006 average O18", lwd=1.5)
+#plot(seq(1,856),timeave2,type="l", ylim=c(-5,2),
+#     main="Temporal Average O18 Anomalies over Tibetan Plateau: 3-Mode Reconstruction",
+#     xlab="Grid box ID from 1 to 856", 
+#     ylab="TP 1997-2006 average O18", lwd=1.5)
 
 #test: plot reconstruction result
 #tp=ggmap(myMap)
@@ -519,7 +516,7 @@ for(i in 4:48){
 #Validation
 #Read the obs data
 dim(dato)
-#[1] 19 37 
+#[1] 17 37 
 obsave=colMeans(dato[5:37], na.rm=T)
 #obsave<- colMeans(dato_rmmin[5:37],na.rm=T)
 plot(obsave, type="l")
@@ -604,17 +601,5 @@ for (i in 10:18) {
          bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
 }
 
-for (i in 19) { 
-  plot(t1, dato[i,5:37],type="o", ylim=c(-50,10),
-       xlab="",ylab="",
-       cex.axis=1.5,cex.lab=1.5,
-       main = paste(stn_name[i],",", "Grid ID", grid_id[i]))
-  legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
-         legend=c("Station data"),
-         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-  lines(t1, gridout1[grid_id[i], 4:36], col="blue") 
-  text(1998,-15, paste("(",letters[i],")"), cex=2.0)
-  legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
-         legend=c("Reconstructed data"),text.col = "blue",
-         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-}
+
+
