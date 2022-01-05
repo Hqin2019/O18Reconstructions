@@ -315,7 +315,7 @@ colnames(dato_std)<- colnames(dato)
 nonNA<- colSums(!is.na(dato_std))
 nonNA
 
-recon=matrix(0,nrow=856,ncol=33)
+recon=matrix(0,nrow=856,ncol=33+3)
 for (i in 5:34) {y=complete.cases(dato_std[,i])
 v=which(y)
 u=dato_std[v,2]
@@ -480,10 +480,10 @@ for(i in 5:ncol(dato)){
   p<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=3.6) +
     scale_colour_gradient2(limits=c(-27,5),low="blue",mid="white", 
                            midpoint=0, high = "red", space="rgb")+
-    ggtitle(paste("Observed O18 Anomalies:", hdjja1[i-4])) +
+    ggtitle(paste("Observed O18", hdjja1[i-4])) +
     theme(plot.title = element_text(hjust = 0.5),legend.key.height = unit(0.8, "cm"), legend.key.width = unit(0.5, "cm")) + 
     labs(x="Longitude", y="Latitude")
-  png(paste("Observed O18 Anomalies ",hdjja1[i-4], ".png", sep = ""), width=600, height=400, res=120)
+  png(paste("Observed O18",hdjja1[i-4], ".png", sep = ""), width=600, height=400, res=120)
   print(p)
   dev.off()
 }
@@ -507,7 +507,7 @@ for(i in 4:48){
     ggtitle(paste("Model O18:", hdjja2[i-3])) +
     theme(plot.title = element_text(hjust = 0.5), legend.key.height = unit(0.8, "cm"), legend.key.width = unit(0.5, "cm")) + 
     labs(x="Longitude", y="Latitude")
-  png(paste("Model O18 Anomalies ",hdjja2[i-3], ".png", sep = ""), width=600, height=400, res=120)
+  png(paste("Model O18",hdjja2[i-3], ".png", sep = ""), width=600, height=400, res=120)
   print(p)
   dev.off()
 }
