@@ -2,25 +2,23 @@
 library(ggplot2)
 library(ggmap)
 
-#load EOFs data
+# load EOF modes data and satellite remote-sensing data
 load(file="data/EOFs.RData")
 load(file="data/RSdata.RData")
 
+# extract first four EOF modes data with theirs corresponding latitude and longtitude
 eofr=cbind(mod_rm[,2:3], EOFs)
 eofm4=eofr[,1:6] 
 colnames(eofm4) <- c("Lon", "Lat", "E1","E2","E3","E4")
 eofm4f=data.frame(eofm4)
 
-# Map 
+# create map 
 #boundary coordinates of Tibetan Plateau
 myLocation <- c(65, 25, 105, 45)
-#lon-lat of lowerleft and lon-lat of upperright
-#maptype = c("terrain", "toner", "watercolor")
 maptype = c("roadmap", "terrain", "satellite", "hybrid")
-#rm(list=c("myMap"))
 myMap = get_map(location = myLocation, source="google", maptype="satellite", crop=TRUE)
 
-#Plot EOFs
+#Plot first four EOF modes
 for(i in 1:4){
   scale=eofm4f[,i+2]
   p<-ggmap(myMap) + geom_point(data=eofm4f, mapping=aes(x=Lon, y=Lat, colour=scale), size=2) +

@@ -2,12 +2,10 @@
 library(ggplot2)
 library(ggmap)
 
-#load EOFs data
+#load PCs data
 load(file="data/PCs.RData")
 
-#Plot PCs
-#Plot the first three PCs
-#first Three PCs in one plot
+#Plot the first four PCs in one figure
 par(mar=c(4,4,3,4))
 time1=seq(1997,2011, len=45)
 PC1=PCs[,1]

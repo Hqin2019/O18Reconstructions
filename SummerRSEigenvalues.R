@@ -1,11 +1,13 @@
 # install.packages() and load the package
 library(ggplot2)
 
-#load Eigenvalues data
+# load Eigenvalues data
 load(file="data/Eigenvalues.RData")
 
-eig=(eigs)^2/45          
-par(mar=c(4,4.5,1.5,4.5))      #graphic size
+# set graphic size
+par(mar=c(4,4.5,1.5,4.5)) 
+# Plot variances and cumulative variances from SVD eigenvalues
+eig=(eigs)^2/45  
 modn=1:45
 plot(modn,100*eig/sum(eig), type='o',lwd=2.5,col='red', 
      xlab="", ylab="", main="Eigenvalues of covariance matrix",cex.axis=1, cex.lab=1.5)
