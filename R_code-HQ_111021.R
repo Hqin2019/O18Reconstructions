@@ -11,7 +11,7 @@ library(ggmap)
 library(matrixStats)
 
 #Read model data
-mod_dt <- read_xls("D:/O18Reconstructions/data_O18.xls")
+mod_dt <- read_xls("data_O18.xls")
 
 #Extract summer months in model data 
 #Work on the column names
