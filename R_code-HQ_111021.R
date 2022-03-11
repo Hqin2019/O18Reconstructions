@@ -303,7 +303,7 @@ dato_O18<- dato[, 5:37]
 dim(dato_O18)
 #[1] 17 33
 sum(!is.na(dato_O18))
-#[1] 210 nonNA values
+#[1] 207 nonNA values
 
 #mixed-mode reconstruction for every month
 f<- data.frame(cbind(mod_rm[, 1], clim_mod, sd_mod))
@@ -393,10 +393,10 @@ colnames(recon3)<-c("BoxID","Lon","Lat", hdjja1)
 
 #fourmodrecon<- recon
 #recon[, c(7, 9, 12, 31)]<- frecon3
-write.csv(recon3,file="D:/O18Reconstructions/reconout3.csv")
+write.csv(recon3,file="C:/Users/hniqd/Documents/O18Reconstructions/reconout3.csv")
 
 #plot the results: space-time averages
-gridout2=read.csv("D:/O18Reconstructions/reconout3.csv",header=TRUE)
+gridout2=read.csv("C:/Users/hniqd/Documents/O18Reconstructions/reconout3.csv",header=TRUE)
 dim(gridout2)
 #[1] 856  37 #The first column is the grid ID
 timeave2=rowMeans(gridout2[,5:37]) #Time ave 
