@@ -457,10 +457,9 @@ ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=O18
   labs(x="Longitude", y="Latitude")
 
 #Plot the reconstruction data and save the figures in a folder
-setwd("D:/O18Reconstructions/ReconFigs")
-recon<- recon3
+setwd("C:/Users/hniqd/Documents/O18Reconstructions/ReconFigs")
 tpdatlatlon=data.frame(recon)
-for(i in 4:36){
+for(i in 4:30){
   scale=pmax(pmin(recon[,i],10),-10) 
   p<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=2.5) +
     scale_colour_gradient2(limits=c(-15,15),low="blue",mid="white", 
@@ -474,7 +473,7 @@ for(i in 4:36){
 }
 
 #Plot the observed data and save the figures in a folder
-setwd("D:/O18Reconstructions/ObservedFigs")
+setwd("C:/Users/hniqd/Documents/O18Reconstructions/ObservedFigs")
 rm(list=c("myMap"))
 #myLocation <- c(10, 20, 115, 50)
 #maptype = c("roadmap", "terrain", "satellite", "hybrid")
@@ -495,7 +494,7 @@ for(i in 5:ncol(dato)){
 }
 
 #Plot the model data and save the figures in a folder
-setwd("D:/O18Reconstructions/ModelFigs")
+setwd("C:/Users/hniqd/Documents/O18Reconstructions/ModelFigs")
 rm(list=c("myMap"))
 #myLocation <- c(10, 20, 115, 50)
 #maptype = c("roadmap", "terrain", "satellite", "hybrid")
