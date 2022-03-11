@@ -363,37 +363,41 @@ recon[1:3,1:7]
 #June 1998 and June 2006 had only four data boxes, which cannot 
 #support four modes regression, thus results are NA for these two months
 
-#Three-mode reconstruction for the four missing months above
-recon3=matrix(0,nrow=856,ncol=33+3)
-for (i in 5:37) {y=complete.cases(dato_std[,i])
+#Three-mode reconstruction, from June 1997-Aug 2005
+recon=matrix(0,nrow=856,ncol=30)
+for (i in c(5:31)) {y=complete.cases(dato_std[,i])
 v=which(y)
 u=dato_std[v,2]
+# choose observation data as response
 datr=dato_std[v,i]
-eofr=eofm4[u,c("E1","E2","E3")]
+# choose first three EOF modes data as predictors
+eofr=eofm3[u,c("E1","E2","E3")]
 df=data.frame(eofr,datr)
+# fit multiple linear regression
 reg=lm(formula=datr~E1+E2+E3, data=df)
+# get corresponding estimate coefficients
 coe=reg$coefficients
 c1=rep(1,856)
-res=cbind(c1,eofm4[,c("E1","E2","E3")])
-recon3[,i-1]=data.matrix(res)%*%coe
+res=cbind(c1,eofm3[,c("E1","E2","E3")])
+# reconstruct data by multiplying estimate coefficients with first three EOF modes data
+recon[,i-1]=data.matrix(res)%*%coe
 }
 
 #Put grid ID, lat and lon as the first three columns
-recon3<- data.frame(recon3)
-recon3[,1:3] = mod_rm[,1:3]
+recon<- data.frame(recon)
+recon[,1:3] = mod_rm[,1:3]
 #recon3[,1]=mod_rm[,3]
 #recon3[,2]=mod_rm[,1]
 #recon3[,3]=mod_rm[,2]
 #Put proper header
-jja=rep(c("Jun","Jul","Aug"),10)
-yr2=rep(1997:2007,each=3)
+jja=rep(c("Jun","Jul","Aug"),9)
+yr2=rep(1997:2005,each=3)
 hdjja1=paste(jja,yr2)
-colnames(recon3)<-c("BoxID","Lon","Lat", hdjja1)
-#frecon3<- recon3[, c(7, 9, 12, 31)]
+colnames(recon)<-c("BoxID","Lon","Lat", hdjja1)
 
 #fourmodrecon<- recon
 #recon[, c(7, 9, 12, 31)]<- frecon3
-write.csv(recon3,file="C:/Users/hniqd/Documents/O18Reconstructions/reconout3.csv")
+write.csv(recon,file="C:/Users/hniqd/Documents/O18Reconstructions/reconout.csv")
 
 #plot the results: space-time averages
 gridout2=read.csv("C:/Users/hniqd/Documents/O18Reconstructions/reconout3.csv",header=TRUE)
