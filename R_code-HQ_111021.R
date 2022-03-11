@@ -521,7 +521,7 @@ for(i in 4:48){
 #Validation
 #Read the obs data
 dim(dato)
-#[1] 17 37 
+#[1] 16 37 
 obsave=colMeans(dato[5:37], na.rm=T)
 #obsave<- colMeans(dato_rmmin[5:37],na.rm=T)
 plot(obsave, type="l")
@@ -530,24 +530,24 @@ plot(obsave, type="l")
 dim(gridout2)
 #gridout2 is data.frame of recon results
 #[1] 856  34 #The first column is the grid ID
-gridout2ori_O18<- gridout2[, 5:34]*sd_mod + clim_mod
-gridout2[, 5:34]<- gridout2ori_O18
+gridout2ori_O18<- gridout2[, 5:31]*sd_mod + clim_mod
+gridout2[, 5:31]<- gridout2ori_O18
 #dato=read.csv("C:/research/TP2020-07-03YaoChen/InputData/stations17-data-JJA-1997-2006-09-23.csv",header=TRUE)
 dim(dato)
-#[1] 17 34
-stn_name=c("Nyalam","Dingri","Dui","Baidi",
-           "Lhasa",
-           "Lulang",  "Bomi","Nagqu",
-           "Shiquanhe","Gaize",
-           "Yushu","Tuotuohe","Lanzhou","Delingha", 
-           "Taxkorgen","Zhangye", "Urumuqi")
+#[1] 16 37
+stn_name<- dato[,1]
+#stn_name=c("Nyalam","Dingri","Dui","Baidi",
+#           "Lhasa",
+#           "Lulang",  "Bomi","Nagqu",
+#           "Shiquanhe","Gaize",
+#           "Yushu","Tuotuohe","Lanzhou","Delingha", 
+#           "Taxkorgen","Zhangye", "Urumuqi")
 #Zhangmu and Wengguo stations are not included. 
-#19-2 = 17 stations
 grid_id=dato[,2]
 length(stn_name)
-#[1] 17
+#[1] 16
 length(grid_id)
-#[1] 17
+#[1] 16
 
 #Zhangye 2 vs 855
 plot(t1,dato[16,5:34],type="o", ylim=c(-20,20), 
@@ -566,40 +566,37 @@ dev.off()
     
 plot.new()
 #png(file = 'monthtrend.png') #Automatical saving of a figure
-t1=seq(1997,2008,len=33)
+t1=seq(1997,2006,len=27)
 stn_name<-dato[,1]
 grid_id=dato[,2]
-gridout1<-recon
-gridout1ori_O18<- gridout1[, 4:36]*sd_mod + clim_mod
-gridout1[, 4:36]<- gridout1ori_O18
 par(mfrow = c(3, 3))  # 4 rows and 4 columns
 par(mgp=c(2,1,0))
 par(mar=c(3,3,2,3))
 
 for (i in 1:9) { 
-  plot(t1, dato[i,5:37],type="o", ylim=c(-50,10),
+  plot(t1, dato[i,5:31],type="o", ylim=c(-50,10),
        xlab="",ylab="",
        cex.axis=1.5,cex.lab=1.5,
        main = paste(stn_name[i],",", "Grid ID", grid_id[i]))
   legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
          legend=c("Station data"),
          bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-  lines(t1, gridout1[grid_id[i], 4:36], col="blue") 
+  lines(t1, gridout2[grid_id[i], 5:31], col="blue") 
   text(1998,-15, paste("(",letters[i],")"), cex=2.0)
   legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
          legend=c("Reconstructed data"),text.col = "blue",
          bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
 }
 
-for (i in 10:18) { 
-  plot(t1, dato[i,5:37],type="o", ylim=c(-50,10),
+for (i in 10:16) { 
+  plot(t1, dato[i,5:31],type="o", ylim=c(-50,10),
        xlab="",ylab="",
        cex.axis=1.5,cex.lab=1.5,
        main = paste(stn_name[i],",", "Grid ID", grid_id[i]))
   legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
          legend=c("Station data"),
          bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-  lines(t1, gridout1[grid_id[i], 4:36], col="blue") 
+  lines(t1, gridout2[grid_id[i], 5:31], col="blue") 
   text(1998,-15, paste("(",letters[i],")"), cex=2.0)
   legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
          legend=c("Reconstructed data"),text.col = "blue",
