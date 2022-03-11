@@ -287,8 +287,10 @@ lines(time1,pc6,col="blue",lwd=2.0,type="l", lty=3)
 legend("bottomleft", legend=c("pc4", "pc5", "pc6"),
        col=c("black", "red", "blue"), lty=1:3, bty = "n",text.font = 1,
        cex = 0.4)
-
-dato=read.csv("D:/O18Reconstructions/cleaned_original.csv",header=TRUE)
+setwd("")
+dato=read.csv("C:/Users/hniqd/Documents/O18Reconstructions/cleaned_original.csv",header=TRUE)
+#remove Yungcun row 9
+dato<- dato[-9, ]
 colnames(dato)[2:4]<- c("BoxID", "Lat", "Lon")
 colnames(dato)[5:37]<- colnames(mod_rm)[4:36]
 IDloc<- dato[, 1:4]
