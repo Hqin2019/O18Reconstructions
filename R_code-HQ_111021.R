@@ -29,7 +29,7 @@ col_names_mod<- colnames(mod_data)
 
 #Project to the desired area
 #Read the 2016-09-24 reconstructed data to get lat and lon coordinates
-tpdat1=read.csv("D:/O18Reconstructions/reconout160924r.csv", header=TRUE)
+tpdat1=read.csv("reconout160924r.csv", header=TRUE)
 tpdatlatlon=tpdat1[,1:3] #909 obs. of 2 variables
 colnames(tpdatlatlon) <- c("BoxID","Lon","Lat")
 tpdat=data.frame(tpdatlatlon)
@@ -90,7 +90,7 @@ tpdatlatlon=mod_rm[,2:3]
 colnames(tpdatlatlon) <- c("Lon", "Lat")
 tpdat=data.frame(tpdatlatlon)
 moddf=data.frame(mod_std)
-#Plot the July 1997 model data
+#Plot the July 1997 model data (anomalies)
 O18=moddf$X1997.Jul
 ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=O18), size=2) +
   scale_colour_gradient2(limits=c(-3.5,3.5),low="blue",mid="white", 
