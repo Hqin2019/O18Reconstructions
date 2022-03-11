@@ -400,24 +400,24 @@ colnames(recon)<-c("BoxID","Lon","Lat", hdjja1)
 write.csv(recon,file="C:/Users/hniqd/Documents/O18Reconstructions/reconout.csv")
 
 #plot the results: space-time averages
-gridout2=read.csv("C:/Users/hniqd/Documents/O18Reconstructions/reconout3.csv",header=TRUE)
+gridout2=read.csv("C:/Users/hniqd/Documents/O18Reconstructions/reconout.csv",header=TRUE)
 dim(gridout2)
-#[1] 856  37 #The first column is the grid ID
-timeave2=rowMeans(gridout2[,5:37]) #Time ave 
+#[1] 856  31 #The first column is the grid ID
+timeave2=rowMeans(gridout2[,5:31]) #Time ave 
 areaw2=cos((pi/180)*gridout2[,4])/sum(cos((pi/180)*gridout2[,4]))
 #Show area weight variation wrt lat, close to be uniform
 plot(areaw2, ylim=c(1/856-0.0002,1/856+0.0002))
-wtgrid2=areaw2*gridout2[,5:37] #Area weighted data
+wtgrid2=areaw2*gridout2[,5:31] #Area weighted data
 spaceave2=colSums(wtgrid2) #Spatial ave
 #write.csv(spaceave2,file="C:/Users/hniqd/OneDrive/Documents/TP2020-07-03YaoChen/2017-10-28Computing/spaceave2mix.csv")
 #write.csv(timeave2,file="C:/Users/hniqd/OneDrive/Documents/TP2020-07-03YaoChen/2017-10-28Computing/timeave2mix.csv")
 
 #Plot space and time average
 length(spaceave2)
-#[1] 33
+#[1] 27
 length(timeave2)
 #[1] 856
-plot(seq(1997,2007,len=33),spaceave2,type="o", ylim=c(-25,30), 
+plot(seq(1997,2005,len=27),spaceave2,type="o", ylim=c(-25,30), 
      main="Spatial Average O18 Anomalies",
      xlab="Time: June, July, August of each year", 
      ylab="TP spatial average O18", lwd=1.5)
@@ -439,7 +439,7 @@ plot(seq(1997,2007,len=33),spaceave2,type="o", ylim=c(-25,30),
 #     xlab="Grid box ID from 1 to 856", 
 #     ylab="TP 1997-2006 average O18", lwd=1.5)
 
-#test: plot reconstruction result
+#test: plot reconstruction result (anomalies)
 #tp=ggmap(myMap)
 rm(list=c("myMap"))
 myLocation <- c(60, 25, 110, 45)
