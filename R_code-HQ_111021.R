@@ -185,8 +185,8 @@ ggmap(myMap)
 #Read the EOF data for TP
 tpdat=data.frame(eofm4)
 #plot the first four EOFs and save the figures
-setwd("D:/O18Reconstructions/EOFs")
-for(i in 1:4){
+setwd("C:/Users/hniqd/Documents/O18Reconstructions/EOFs")
+for(i in 1:3){
   scale=tpdat[,i+2]
   #ggplot of the first six EOFs
   p<- ggmap(myMap) + geom_point(data=tpdat, mapping=aes(x=Lon, y=Lat, colour=scale), size=2.5) +
@@ -214,7 +214,7 @@ ggmap(myMap) + geom_point(data=tpdat, mapping=aes(x=Lon, y=Lat, colour=O18), siz
 
 #Plot PCs
 #Plot the first three PCs
-setwd("D:/O18Reconstructions/PCs")
+setwd("C:/Users/hniqd/Documents/O18Reconstructions/PCs")
 time1 = seq(1997,2011, len = 45)
 dev.off()
 for(i in 1:3){
