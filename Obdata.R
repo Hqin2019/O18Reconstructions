@@ -23,10 +23,10 @@ ggplot(obdata1, aes(x=Time, value, col=variable)) + geom_point(size=2) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   scale_color_manual(values = c("red", "orange", "green", "blue", "black", "purple",
                                 "pink", "brown", "grey", "green4", "coral", "steelblue4",
-                                "yellow4", "goldenrod4",
-                                "yellow", "rosybrown"), label = dato[,1]) + ylim(-30, 10) + 
+                                 "goldenrod4","yellow", "yellow4"), label = dato[,1]) + ylim(-30, 10) + 
   labs(color="Station Name",y="Value",x="Time") +
   ggtitle("Original Observed Data") + theme(plot.title = element_text(hjust = 0.5,size=14, margin = margin(t = 0, r = 0, b = 10, l = 0)),
                                             axis.title=element_text(size=13),
                                             axis.title.y = element_text(margin = margin(t = 0, r = 8, b = 0, l = 0)),
                                             axis.title.x = element_text(margin = margin(t = 8, r = 0, b = 0, l = 0)))
+

@@ -33,7 +33,7 @@ for (i in 1:9) {
 }
 
 
-for (i in 10:16) { 
+for (i in 10:15) { 
   plot(t1, dato[i,5:31],type="o", ylim=c(-50,10),
        xlab="",ylab="",
        cex.axis=1.5,cex.lab=1.5,
