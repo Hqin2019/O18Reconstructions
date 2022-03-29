@@ -169,7 +169,7 @@ ggmap(myMap)
 #Read the EOF data for TP
 tpdat=data.frame(eofm4)
 #plot the first four EOFs and save the figures
-setwd("C:/Users/hniqd/Documents/O18Reconstructions/EOFs")
+setwd("~/Documents/R_Work/O18Reconstructions/EOFs")
 for(i in 1:3){
   scale=tpdat[,i+2]
   #ggplot of the first six EOFs
@@ -198,7 +198,7 @@ ggmap(myMap) + geom_point(data=tpdat, mapping=aes(x=Lon, y=Lat, colour=O18), siz
 
 #Plot PCs
 #Plot the first three PCs
-setwd("C:/Users/hniqd/Documents/O18Reconstructions/PCs")
+setwd("~/Documents/R_Work/O18Reconstructions/PCs")
 time1 = seq(1997,2011, len = 45)
 dev.off()
 for(i in 1:3){
@@ -271,8 +271,10 @@ lines(time1,pc6,col="blue",lwd=2.0,type="l", lty=3)
 legend("bottomleft", legend=c("pc4", "pc5", "pc6"),
        col=c("black", "red", "blue"), lty=1:3, bty = "n",text.font = 1,
        cex = 0.4)
-setwd("")
-dato=read.csv("C:/Users/hniqd/Documents/O18Reconstructions/cleaned_original.csv",header=TRUE)
+
+#Read observation data
+setwd("~/Documents/R_Work/O18Reconstructions")
+dato=read.csv("cleaned_original.csv",header=TRUE)
 #remove Yungcun row 9
 dato<- dato[-9, ]
 colnames(dato)[2:4]<- c("BoxID", "Lat", "Lon")
@@ -441,7 +443,7 @@ ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=O18
   labs(x="Longitude", y="Latitude")
 
 #Plot the reconstruction data and save the figures in a folder
-setwd("C:/Users/hniqd/Documents/O18Reconstructions/ReconFigs")
+setwd("~/Documents/R_Work/O18Reconstructions/ReconFigs")
 tpdatlatlon=data.frame(recon)
 for(i in 4:30){
   scale=pmax(pmin(recon[,i],10),-10) 
@@ -455,6 +457,8 @@ for(i in 4:30){
   print(p)
   dev.off()
 }
+
+
 
 #Plot the observed data and save the figures in a folder
 setwd("C:/Users/hniqd/Documents/O18Reconstructions/ObservedFigs")
