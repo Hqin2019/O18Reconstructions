@@ -124,22 +124,6 @@ plot(modn,varexp,type="o",col="blue",
 axis(4, col="blue", col.ticks="blue", col.axis="blue", cex.axis=1.5)
 mtext("Percent Cumulative Eigenvalue [%]",side=4,line=3, cex=1.5, col="blue")
 dev.off
-#Plot the eigenvalues vs mode number
-par(mar=c(4,4,3,4))
-modn=1:45
-plot(modn,100*eig/sum(eig), type="o", xlab="EOF Mode Number",
-     ylab="Eigenvalues [%]",
-     main="Scree Plot and Cumuilative Variance Explained")
-#legend(10, 400, lty=1, lwd=3.0, 
-#       legend=c("Eigenvalues"),bty="n",text.font=2, cex=1.0)
-par(new=TRUE)
-varexp=100*cumsum(eig)/sum(eig)
-plot(modn,varexp, type="o",col="red",lwd=1.5, 
-     axes=FALSE, xlab="",ylab="")
-#legend(2, 80, lty=1, lwd=3.0, col="red",text.col="red",
-#       legend=c("Percent Cumulative Eigenvalues"),bty="n",text.font=2, cex=1.0)
-axis(4, col="red",col.ticks="red", col.axis="red", )
-mtext("Percent Cumulative Eigenvalue [%]", side=4, line=3, col = "red", cex.axis=1.5)
 
 # SVD EOF
 #Mark lat and lon data as the first two columns of the EOF data 
