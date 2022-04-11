@@ -246,20 +246,6 @@ lines(time1,pc3,col="blue",lwd=2.0,type="l", lty=3)
 legend("bottomleft", legend=c("pc1", "pc2", "pc3"),
        col=c("black", "red", "blue"), lty=1:3, bty = "n",text.font = 1,
        cex = 0.4)
-#PC4-PC6 in one plot
-time1=seq(1997,2011, len=45)
-pc4=jjasvd$v[,4]
-pc5=jjasvd$v[,5]
-pc6=jjasvd$v[,6]
-plot(time1, pc4, type="l", col="black",
-     main="PC 4 to PC 6", 
-     xlab="Time", ylab="PC values",
-     ylim=c(-0.8,0.4), lwd=2.0)
-lines(time1,pc5,col="red", type="l", lty=2, lwd=2.0 )
-lines(time1,pc6,col="blue",lwd=2.0,type="l", lty=3)
-legend("bottomleft", legend=c("pc4", "pc5", "pc6"),
-       col=c("black", "red", "blue"), lty=1:3, bty = "n",text.font = 1,
-       cex = 0.4)
 
 #Read observation data
 setwd("~/Documents/R_Work/O18Reconstructions")
