@@ -213,17 +213,6 @@ for(i in 1:3){
   dev.off()
 }
 
-for(i in 4:6){
-  pc = jjasvd$v[,i]
-  png(paste("PC", i, ".png", sep = ""), width = 700, height = 400, res = 120)
-  p<-  plot(time1, pc, type = "o", 
-            main = paste("Principal Component #",i, sep = ""),
-            xlab = "Time", ylab = "PC values",
-            ylim = c(-0.45,0.4), lwd = 1.5)
-  
-  print(p)
-  dev.off()
-}
 
 time1=seq(1997,2011, len=45)
 pc1=jjasvd$v[,1]
