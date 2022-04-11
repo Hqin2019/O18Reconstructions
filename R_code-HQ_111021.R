@@ -252,77 +252,23 @@ setwd("~/Documents/R_Work/O18Reconstructions")
 dato=read.csv("cleaned_original.csv",header=TRUE)
 #remove Yungcun row 9
 dato<- dato[-9, ]
+rownames(dato)<- NULL
 colnames(dato)[2:4]<- c("BoxID", "Lat", "Lon")
 colnames(dato)[5:37]<- colnames(mod_rm)[4:36]
-IDloc<- dato[, 1:4]
+IDloc<- dato[, 1:4]#Station, BoxID, Lat, Lon
 stnyr=dim(dato)
 stnyr
-#[1] 17 37 
-#17 stations: remove Bomi(no points)
-#First 4 columns: Stn name, BoxID, Lat, Lon
-dato_O18<- dato[, 5:37]
+#[1] 16 37 
+#16 stations: remove Bomi(no points) and Yungcun
+#First 4 columns: StationName, BoxID, Lat, Lon
+#column 5:37. JJA from 1997-2007: 3 months for 11 years = 33 columns
+#For this study, we consider data of JJA from 1997-2005 (column 5:31): 3 months
+#for 9 months = 27 columns
+dato_O18<- dato[, 5:31]
 dim(dato_O18)
-#[1] 17 33
+#[1] 16 27
 sum(!is.na(dato_O18))
-#[1] 207 nonNA values
-
-#mixed-mode reconstruction for every month
-f<- data.frame(cbind(mod_rm[, 1], clim_mod, sd_mod))
-climo<- f[f$V1 %in% dato[,2], ][,2]
-sdo<- f[f$V1 %in% dato[,2], ][,3]
-dato_O18_std<- (dato_O18 - climo)/sdo 
-
-dato_std<- data.frame(dato[, 1:4], dato_O18_std)
-colnames(dato_std)<- colnames(dato)
-
-nonNA<- colSums(!is.na(dato_std))
-nonNA
-
-recon=matrix(0,nrow=856,ncol=33+3)
-for (i in 5:34) {y=complete.cases(dato_std[,i])
-v=which(y)
-u=dato_std[v,2]
-datr=dato_std[v,i]
-eofr=eofm4[u,c("E1","E2","E3","E4")]
-df=data.frame(eofr,datr)
-reg=lm(formula=datr~E1+E2+E3+E4, data=df)
-coe=reg$coefficients
-c1=rep(1,856)
-res=cbind(c1,eofm4[,c("E1","E2","E3","E4")])
-#resm=data.frame(cbind(1,eofm4[,3:6]))
-#coem=data.frame(coe)
-recon[,i-1]=data.matrix(res)%*%coe
-}
-
-#Test for an individual month
-i=5
-y=complete.cases(dato_std[,i])
-v=which(y)
-u=dato_std[v,2] #BoxID of non-NA values
-datr=dato_std[v,i] #non-NA values in this year
-eofr=eofm4[u,c("E1","E2","E3","E4")]
-df=data.frame(eofr,datr)
-reg=lm(formula=datr~E1+E2+E3+E4, data=df)
-coe=reg$coefficients
-c1=rep(1,856)
-res=cbind(c1,eofm4[,c("E1","E2","E3","E4")])
-#resm=data.frame(cbind(1,eofm4[,3:6]))
-#coem=data.frame(coe)
-recon1=data.matrix(res)%*%coe
-#test done
-
-#Put grid ID, lat and lon as the first three columns
-recon[,1]=mod_rm[,3]
-recon[,2]=mod_rm[,1]
-recon[,3]=mod_rm[,2]
-#Create a proper header
-jja=rep(c("Jun","Jul","Aug"),10)
-yr2=rep(1997:2006,each=3)
-hdjja1=paste(jja,yr2)
-colnames(recon)<-c("BoxID","Lon","Lat", hdjja1)
-recon[1:3,1:7]
-#June 1998 and June 2006 had only four data boxes, which cannot 
-#support four modes regression, thus results are NA for these two months
+#[1] 180 nonNA values
 
 #Three-mode reconstruction, from June 1997-Aug 2005
 recon=matrix(0,nrow=856,ncol=30)
