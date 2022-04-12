@@ -270,7 +270,16 @@ dim(dato_O18)
 sum(!is.na(dato_O18))
 #[1] 180 nonNA values
 
-#Three-mode reconstruction, from June 1997-Aug 2005
+# compute standardized observation data using mean and standard deviation of remote-sensing data
+f<- data.frame(cbind(mod_rm[, 1], clim_mod, sd_mod))
+climo<- f[f$V1 %in% dato[,2], ][,2]            
+sdo<- f[f$V1 %in% dato[,2], ][,3]
+dato_O18_std<- (dato_O18 - climo)/sdo
+dato_std<- data.frame(dato[, 1:4], dato_O18_std)
+dim(dato_std)# 16x31
+colnames(dato_std)<- colnames(dato[, 1:31])
+
+#Three-mode reconstruction, from June 1997-Aug 2005. There are 30 columns:27 months+BoxID+Lon+Lat
 recon=matrix(0,nrow=856,ncol=30)
 for (i in c(5:31)) {y=complete.cases(dato_std[,i])
 v=which(y)
@@ -302,32 +311,30 @@ yr2=rep(1997:2005,each=3)
 hdjja1=paste(jja,yr2)
 colnames(recon)<-c("BoxID","Lon","Lat", hdjja1)
 
-#fourmodrecon<- recon
-#recon[, c(7, 9, 12, 31)]<- frecon3
-write.csv(recon,file="C:/Users/hniqd/Documents/O18Reconstructions/reconout.csv")
+write.csv(recon,file="~/Documents/R_Work/O18Reconstructions/reconout.csv")
 
 #plot the results: space-time averages
-gridout2=read.csv("C:/Users/hniqd/Documents/O18Reconstructions/reconout.csv",header=TRUE)
-dim(gridout2)
+#gridout2=read.csv("C:/Users/hniqd/Documents/O18Reconstructions/reconout.csv",header=TRUE)
+#dim(gridout2)
 #[1] 856  31 #The first column is the grid ID
-timeave2=rowMeans(gridout2[,5:31]) #Time ave 
-areaw2=cos((pi/180)*gridout2[,4])/sum(cos((pi/180)*gridout2[,4]))
+#timeave2=rowMeans(gridout2[,5:31]) #Time ave 
+#areaw2=cos((pi/180)*gridout2[,4])/sum(cos((pi/180)*gridout2[,4]))
 #Show area weight variation wrt lat, close to be uniform
-plot(areaw2, ylim=c(1/856-0.0002,1/856+0.0002))
-wtgrid2=areaw2*gridout2[,5:31] #Area weighted data
-spaceave2=colSums(wtgrid2) #Spatial ave
+#plot(areaw2, ylim=c(1/856-0.0002,1/856+0.0002))
+#wtgrid2=areaw2*gridout2[,5:31] #Area weighted data
+#spaceave2=colSums(wtgrid2) #Spatial ave
 #write.csv(spaceave2,file="C:/Users/hniqd/OneDrive/Documents/TP2020-07-03YaoChen/2017-10-28Computing/spaceave2mix.csv")
 #write.csv(timeave2,file="C:/Users/hniqd/OneDrive/Documents/TP2020-07-03YaoChen/2017-10-28Computing/timeave2mix.csv")
 
 #Plot space and time average
-length(spaceave2)
+#length(spaceave2)
 #[1] 27
-length(timeave2)
+#length(timeave2)
 #[1] 856
-plot(seq(1997,2005,len=27),spaceave2,type="o", ylim=c(-25,30), 
-     main="Spatial Average O18 Anomalies",
-     xlab="Time: June, July, August of each year", 
-     ylab="TP spatial average O18", lwd=1.5)
+#plot(seq(1997,2005,len=27),spaceave2,type="o", ylim=c(-25,30), 
+#     main="Spatial Average O18 Anomalies",
+#     xlab="Time: June, July, August of each year", 
+#     ylab="TP spatial average O18", lwd=1.5)
 
 ##Large values for June 2006 (-24.21), July 2000 (-7.68), and Aug 1999 (-7.11) 
 #which(recon[, 4:33] == max(recon[, 4:33]), arr.ind = TRUE)
@@ -368,7 +375,7 @@ setwd("~/Documents/R_Work/O18Reconstructions/ReconFigs")
 tpdatlatlon=data.frame(recon)
 for(i in 4:30){
   scale=pmax(pmin(recon[,i],10),-10) 
-  p<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=2.5) +
+  p<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=2) +
     scale_colour_gradient2(limits=c(-15,15),low="blue",mid="white", 
                            midpoint=0, high = "red", space="rgb")+
     ggtitle(paste("Reconstructed O18 Anomalies:", hdjja1[i-3])) +
@@ -382,7 +389,7 @@ for(i in 4:30){
 
 
 #Plot the observed data and save the figures in a folder
-setwd("C:/Users/hniqd/Documents/O18Reconstructions/ObservedFigs")
+setwd("~/Documents/R_Work/O18Reconstructions/ObservedFigs")
 rm(list=c("myMap"))
 #myLocation <- c(10, 20, 115, 50)
 #maptype = c("roadmap", "terrain", "satellite", "hybrid")
@@ -391,7 +398,7 @@ ggmap(myMap)
 tpdatlatlon=data.frame(dato)
 for(i in 5:ncol(dato)){
   scale=pmax(pmin(dato[,i],10),-10) 
-  p<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=3.6) +
+  p<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=2) +
     scale_colour_gradient2(limits=c(-27,5),low="blue",mid="white", 
                            midpoint=0, high = "red", space="rgb")+
     ggtitle(paste("Observed O18", hdjja1[i-4])) +
@@ -403,7 +410,7 @@ for(i in 5:ncol(dato)){
 }
 
 #Plot the model data and save the figures in a folder
-setwd("C:/Users/hniqd/Documents/O18Reconstructions/ModelFigs")
+setwd("~/Documents/R_Work/O18Reconstructions/ModelFigs")
 rm(list=c("myMap"))
 #myLocation <- c(10, 20, 115, 50)
 #maptype = c("roadmap", "terrain", "satellite", "hybrid")
@@ -415,7 +422,7 @@ yr2=rep(1997:2011,each=3)
 hdjja2=paste(jja,yr2)
 for(i in 4:48){
   scale=pmax(pmin(tpdatlatlon[,i],10),-10) 
-  p<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=2.5) +
+  p<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=2) +
     scale_colour_gradient2(limits=c(-15,5),low="blue",mid="white", 
                            midpoint=0, high = "red", space="rgb")+
     ggtitle(paste("Model O18:", hdjja2[i-3])) +
@@ -428,212 +435,50 @@ for(i in 4:48){
 
 
 #Validation
-#Read the obs data
-dim(dato)
-#[1] 16 37 
-obsave=colMeans(dato[5:37], na.rm=T)
-#obsave<- colMeans(dato_rmmin[5:37],na.rm=T)
-plot(obsave, type="l")
-
-#Compare station and itd grid box data
-dim(gridout2)
-#gridout2 is data.frame of recon results
-#[1] 856  34 #The first column is the grid ID
-gridout2ori_O18<- gridout2[, 5:31]*sd_mod + clim_mod
-gridout2[, 5:31]<- gridout2ori_O18
-#dato=read.csv("C:/research/TP2020-07-03YaoChen/InputData/stations17-data-JJA-1997-2006-09-23.csv",header=TRUE)
-dim(dato)
-#[1] 16 37
-stn_name<- dato[,1]
-#stn_name=c("Nyalam","Dingri","Dui","Baidi",
-#           "Lhasa",
-#           "Lulang",  "Bomi","Nagqu",
-#           "Shiquanhe","Gaize",
-#           "Yushu","Tuotuohe","Lanzhou","Delingha", 
-#           "Taxkorgen","Zhangye", "Urumuqi")
-#Zhangmu and Wengguo stations are not included. 
-grid_id=dato[,2]
-length(stn_name)
-#[1] 16
-length(grid_id)
-#[1] 16
-
-#Zhangye 2 vs 855
-plot(t1,dato[16,5:34],type="o", ylim=c(-20,20), 
-     main="Station and Reconstructed O18 Anomalies: Zhangye",
-     xlab="Time: June, July, August of each year", 
-     ylab="O18", lwd=1.5)
-lines(t1,gridout2[which(gridout2$BoxID==855),5:34], type="l", col="blue")
-
-#Dui 3 vs 51
-plot(t1,dato[3,5:34],type="o", ylim=c(-40,30), 
-     main="Station and Reconstructed O18 Anomalies: Dui",
-     xlab="Time: June, July, August of each year", 
-     ylab="O18", lwd=1.5)
-lines(t1,gridout2[which(gridout2$BoxID==51),5:34], type="l", col="blue")
-dev.off()
-    
-plot.new()
-#png(file = 'monthtrend.png') #Automatical saving of a figure
-t1=seq(1997,2006,len=27)
+setwd("~/Documents/R_Work/O18Reconstructions")
+# get station name and corresponding grid id
 stn_name<-dato[,1]
 grid_id=dato[,2]
-par(mfrow = c(3, 3))  # 4 rows and 4 columns
-par(mgp=c(2,1,0))
-par(mar=c(3,3,2,3))
-
-for (i in 1:9) { 
-  plot(t1, dato[i,5:31],type="o", ylim=c(-50,10),
-       xlab="",ylab="",
-       cex.axis=1.5,cex.lab=1.5,
-       main = paste(stn_name[i],",", "Grid ID", grid_id[i]))
-  legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
-         legend=c("Station data"),
-         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-  lines(t1, gridout2[grid_id[i], 5:31], col="blue") 
-  text(1998,-15, paste("(",letters[i],")"), cex=2.0)
-  legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
-         legend=c("Reconstructed data"),text.col = "blue",
-         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-}
-
-for (i in 10:16) { 
-  plot(t1, dato[i,5:31],type="o", ylim=c(-50,10),
-       xlab="",ylab="",
-       cex.axis=1.5,cex.lab=1.5,
-       main = paste(stn_name[i],",", "Grid ID", grid_id[i]))
-  legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
-         legend=c("Station data"),
-         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-  lines(t1, gridout2[grid_id[i], 5:31], col="blue") 
-  text(1998,-15, paste("(",letters[i],")"), cex=2.0)
-  legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
-         legend=c("Reconstructed data"),text.col = "blue",
-         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-}
-
-#With observation data from 1997-2005 for three-mode
-datocut<- dato_O18_std[, 1:27]
-dato_std<- data.frame(dato[, 1:4], datocut)
-colnames(dato_std)<- colnames(dato[, 1:31])
-
-recon3=matrix(0,nrow=856,ncol=30)
-for (i in 5:31) {y=complete.cases(dato_std[,i])
-v=which(y)
-u=dato_std[v,2]
-datr=dato_std[v,i]
-eofr=eofm3[u,c("E1","E2","E3")]
-df=data.frame(eofr,datr)
-reg=lm(formula=datr~E1+E2+E3, data=df)
-coe=reg$coefficients
-c1=rep(1,856)
-res=cbind(c1,eofm3[,c("E1","E2","E3")])
-recon3[,i-1]=data.matrix(res)%*%coe
-}
-
-#Put grid ID, lat and lon as the first three columns
-recon3<- data.frame(recon3)
-recon3[,1:3] = mod_rm[,1:3]
-#recon3[,1]=mod_rm[,3]
-#recon3[,2]=mod_rm[,1]
-#recon3[,3]=mod_rm[,2]
-#Put proper header
-jja=rep(c("Jun","Jul","Aug"),9)
-yr2=rep(1997:2005,each=3)
-hdjja1=paste(jja,yr2)
-colnames(recon3)<-c("BoxID","Lon","Lat", hdjja1)
-
-write.csv(recon3,file="D:/O18Reconstructions/reconout3cut.csv")
-
-#plot the results: space-time averages
-gridout2=read.csv("D:/O18Reconstructions/reconout3cut.csv",header=TRUE)
-dim(gridout2)
-#[1] 856  31 #The first column is the grid ID
-timeave2=rowMeans(gridout2[,5:31]) #Time ave 
-areaw2=cos((pi/180)*gridout2[,4])/sum(cos((pi/180)*gridout2[,4]))
-#Show area weight variation wrt lat, close to be uniform
-plot(areaw2, ylim=c(1/856-0.0002,1/856+0.0002))
-wtgrid2=areaw2*gridout2[,5:31] #Area weighted data
-spaceave2=colSums(wtgrid2) #Spatial ave
-#write.csv(spaceave2,file="C:/Users/hniqd/OneDrive/Documents/TP2020-07-03YaoChen/2017-10-28Computing/spaceave2mix.csv")
-#write.csv(timeave2,file="C:/Users/hniqd/OneDrive/Documents/TP2020-07-03YaoChen/2017-10-28Computing/timeave2mix.csv")
-
-#Plot the reconstruction data and save the figures in a folder
-setwd("D:/O18Reconstructions/ReconFig3Mod3cut")
-recon<- recon3
-tpdatlatlon=data.frame(recon)
-for(i in 4:30){
-  scale=pmax(pmin(recon[,i],10),-10) 
-  p<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=2.5) +
-    scale_colour_gradient2(limits=c(-15,15),low="blue",mid="white", 
-                           midpoint=0, high = "red", space="rgb")+
-    ggtitle(paste("Reconstructed O18 Anomalies:", hdjja1[i-3])) +
-    theme(plot.title = element_text(hjust = 0.5),legend.key.height = unit(0.8, "cm"), legend.key.width = unit(0.5, "cm"))+
-    labs(x="Longitude", y="Latitude")
-  png(paste("Reconstructed O18 Anomalies",hdjja1[i-3], ".png", sep = ""), width=600, height=400, res=120)
-  print(p)
-  dev.off()
-}
-
-
-#Validation
-#Read the obs data
-dim(dato)
-#[1] 17 37 
-obsave=colMeans(dato[5:31], na.rm=T)
-#obsave<- colMeans(dato_rmmin[5:37],na.rm=T)
-plot(obsave, type="l")
-
-#Compare station and itd grid box data
-dim(gridout2)
-#gridout2 is data.frame of recon results
-#[1] 856  31 #The first column is the grid ID
-gridout2ori_O18<- gridout2[, 5:31]*sd_mod + clim_mod
-gridout2[, 5:31]<- gridout2ori_O18
-
-grid_id=dato[,2]
-length(grid_id)
-#[1] 17
-
-
-plot.new()
-#png(file = 'monthtrend.png') #Automatical saving of a figure
-t1=seq(1997,2008,len=33)
-t1<- t1[1: 27]
-stn_name<-dato[,1]
-gridout1<-recon
+gridout1<-recon #856x30
+#convert the standardized anomaly back
 gridout1ori_O18<- gridout1[, 4:30]*sd_mod + clim_mod
 gridout1[, 4:30]<- gridout1ori_O18
-par(mfrow = c(3, 3))  # 4 rows and 4 columns
+id_index=which(gridout1[,1]%in%grid_id)
+# create time sequence from 1997 to 2005
+t1=seq(1997,2006,len=27)
+# set figure with 4 rows and 4 columns
+par(mfrow = c(3, 3))  
 par(mgp=c(2,1,0))
 par(mar=c(3,3,2,3))
-
+# plot validation figure including reconstruction data and observation data
 for (i in 1:9) { 
-  plot(t1, dato[i,5:31],type="o", ylim=c(-50,10),
+  plot(t1, dato[i,5:31],type="o", ylim=c(-40,20),
        xlab="",ylab="",
        cex.axis=1.5,cex.lab=1.5,
        main = paste(stn_name[i],",", "Grid ID", grid_id[i]))
-  #legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
-         #legend=c("Station data"),
-         #bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-  lines(t1, gridout1[grid_id[i], 4:30], col="blue") 
+  legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
+         legend=c("Station data"),
+         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
+  lines(t1, gridout1[id_index[i], 4:30], col="blue") 
   text(1998,-15, paste("(",letters[i],")"), cex=2.0)
-  #legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
-         #legend=c("Reconstructed data"),text.col = "blue",
-         #bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
+  legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
+         legend=c("Reconstructed data"),text.col = "blue",
+         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
 }
 
-for (i in 10:17) { 
-  plot(t1, dato[i,5:31],type="o", ylim=c(-50,10),
+
+for (i in 10:15) { 
+  plot(t1, dato[i,5:31],type="o", ylim=c(-40,20),
        xlab="",ylab="",
        cex.axis=1.5,cex.lab=1.5,
        main = paste(stn_name[i],",", "Grid ID", grid_id[i]))
-  #legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
-         #legend=c("Station data"),
-         #bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-  lines(t1, gridout1[grid_id[i], 4:30], col="blue") 
+  legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
+         legend=c("Station data"),
+         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
+  lines(t1, gridout1[id_index[i], 4:30], col="blue") 
   text(1998,-15, paste("(",letters[i],")"), cex=2.0)
-  #legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
-         #legend=c("Reconstructed data"),text.col = "blue",
-         #bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
+  legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
+         legend=c("Reconstructed data"),text.col = "blue",
+         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
 }
+
