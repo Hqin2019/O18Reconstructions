@@ -8,45 +8,27 @@ load(file="data/OBdata.RData")
 load(file="data/Reconstruction.RData")
 
 # get station name and corresponding grid id
-stn_name<-dato[,1]
-grid_id=dato[,2]
-id_index=which(gridout1[,1]%in%grid_id)
+station <- dato[,1]
+grid_id <- dato[,2]
+dato1=t(dato[5:31])
+dato1 <- as.data.frame(dato1)
+colnames(dato1)<-station
+
+gridout1_<-t(gridout1[4:30])
+id_all<-gridout1[,1]
+colnames(gridout1_)<-id_all
 
 # create time sequence from 1997 to 2005
 t1=seq(1997,2006,len=27)
 # set figure with 4 rows and 4 columns
-par(mfrow = c(3, 3))  
-par(mgp=c(2,1,0))
-par(mar=c(3,3,2,3))
 # plot validation figure including reconstruction data and observation data
-for (i in 1:9) { 
-  plot(t1, dato[i,5:31],type="o", ylim=c(-40,20),
-       xlab="",ylab="",
-       cex.axis=1.5,cex.lab=1.5,
-       main = paste(stn_name[i],",", "Grid ID", grid_id[i]))
-  legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
-         legend=c("Station data"),
-         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-  lines(t1, gridout1[id_index[i], 4:30], col="blue") 
-  text(1998,-15, paste("(",letters[i],")"), cex=2.0)
-  legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
-         legend=c("Reconstructed data"),text.col = "blue",
-         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
+for (i in 1:15) { 
+  p <- ggplot() + geom_point(aes(t1,dato1[,i]),size=1,shape=1) + geom_line(aes(t1,dato1[,i]),size=0.5) +
+    labs(title=paste(station[i],"Grid ID",grid_id[i],sep=" ")) + theme(plot.title = element_text(hjust = 0.5,size=10),
+                                  axis.title.y=element_blank(), 
+                                  axis.title.x=element_blank(),
+                                  axis.text.y = element_text(size = 8))+
+    ylim(-40,20) + geom_line(aes(t1,gridout1_[,grid_id[i]]),size=0.5,lty=1,col="blue")+
+    annotate("text", x=1997.5, y=-30, label=paste("(",letters[i],")"),size=6)
+  print(p)
 }
-
-
-for (i in 10:15) { 
-  plot(t1, dato[i,5:31],type="o", ylim=c(-40,20),
-       xlab="",ylab="",
-       cex.axis=1.5,cex.lab=1.5,
-       main = paste(stn_name[i],",", "Grid ID", grid_id[i]))
-  legend(1995, 56,  col=c("black"),lwd=2.0, lty=1,
-         legend=c("Station data"),
-         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-  lines(t1, gridout1[id_index[i], 4:30], col="blue") 
-  text(1998,-15, paste("(",letters[i],")"), cex=2.0)
-  legend(1995, 52,  col=c("blue"),lwd=2.0, lty=1,
-         legend=c("Reconstructed data"),text.col = "blue",
-         bty="n",text.font=2.0,cex=1.0, seg.len = 0.8) 
-}
-
