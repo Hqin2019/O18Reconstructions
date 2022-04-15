@@ -386,6 +386,21 @@ for(i in 4:30){
   dev.off()
 }
 
+#ggplot
+library(ggpubr)
+library(gridExtra)
+p<- list()
+for(i in 4:30){
+  scale=pmax(pmin(recon[,i],10),-10) 
+  p[[i]]<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=2) +
+    scale_colour_gradient2(limits=c(-15,15),low="blue",mid="white", 
+                           midpoint=0, high = "red", space="rgb")+
+    ggtitle(paste("Reconstructed O18 Anomalies:", hdjja1[i-3])) +
+    theme(plot.title = element_text(hjust = 0.5),legend.key.height = unit(0.8, "cm"), legend.key.width = unit(0.5, "cm"))+
+    labs(x="Longitude", y="Latitude")
+}
+do.call(grid.arrange, p)
+
 
 
 #Plot the observed data and save the figures in a folder
