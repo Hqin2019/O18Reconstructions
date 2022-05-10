@@ -389,17 +389,20 @@ for(i in 4:30){
 #ggplot
 library(ggpubr)
 library(gridExtra)
-p<- list()
+plot.list<- list()
 for(i in 4:30){
   scale=pmax(pmin(recon[,i],10),-10) 
-  p[[i]]<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=2) +
+  p<- ggmap(myMap) + geom_point(data=tpdatlatlon, mapping=aes(x=Lon, y=Lat, colour=scale), size=2) +
     scale_colour_gradient2(limits=c(-15,15),low="blue",mid="white", 
                            midpoint=0, high = "red", space="rgb")+
-    ggtitle(paste("Reconstructed O18 Anomalies:", hdjja1[i-3])) +
+    ggtitle(hdjja1[i-3]) 
     theme(plot.title = element_text(hjust = 0.5),legend.key.height = unit(0.8, "cm"), legend.key.width = unit(0.5, "cm"))+
     labs(x="Longitude", y="Latitude")
+  plot.list[[i-3]]= p
 }
-do.call(grid.arrange, p)
+
+plot<-ggarrange(plotlist=plot.list, ncol=5, nrow=6)
+annotate_figure(plot, top = text_grob("Reconstructed O18", color = "black", face = "bold", size = 14))
 
 
 
